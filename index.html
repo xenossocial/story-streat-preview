@@ -1,0 +1,735 @@
+<!doctype html><html lang="el"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Story Streat Δεκέμβριος</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans+Extra+Condensed:ital,wght@0,700;0,800;0,900;1,800;1,900&family=Fira+Sans:wght@400;600;700&family=Permanent+Marker&display=swap">
+<style>
+/* Layout: single dark column, brand calendar on top, then posts grouped by day. */
+:root{
+  --bg:#0b0b0b; --surface:#161311; --surface-2:#211c18; --ink:#f7f3ee; --muted:#a69b90;
+  --line:#2f2925; --orange:#ff5f15; --orange-soft:rgba(255,95,21,.16); --on-orange:#0b0b0b;
+  --ok:#7fd18b;
+  --f-display:'Fira Sans Extra Condensed','Arial Narrow',Arial,sans-serif;
+  --f-body:'Fira Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+  --f-marker:'Permanent Marker','Comic Sans MS',cursive;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body);margin:0}
+.wrap{max-width:640px;margin:0 auto;padding-block:20px 96px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.top img{width:120px;height:auto;mix-blend-mode:lighten;flex:none}
+.top h1{font:italic 900 clamp(34px,9vw,52px)/.95 var(--f-display);margin:0;letter-spacing:-.5px;text-wrap:balance}
+.top h1 span{color:var(--orange)}
+.tag{font:22px/1.2 var(--f-marker);color:var(--orange);margin:6px 0 10px;transform:rotate(-2deg);display:inline-block}
+.intro{color:var(--muted);margin:0 0 20px;max-width:60ch}
+.intro b{color:var(--ink)}
+/* calendar */
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 12px 14px;margin-bottom:22px}
+.cal-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px;padding:0 4px 10px}
+.cal-head h2{font:italic 900 28px/1 var(--f-display);margin:0;text-transform:uppercase;letter-spacing:.5px}
+.cal-head p{margin:0;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.dow{text-align:center;font:700 12px/1 var(--f-display);color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:4px 0 6px}
+.day{min-height:68px;border-radius:10px;padding:5px 4px;display:flex;flex-direction:column;gap:3px;
+  background:var(--bg);border:1px solid transparent;text-decoration:none;min-width:0}
+.day.blank{background:transparent}
+.day.we .dn{color:var(--muted)}
+.dn{font:700 15px/1 var(--f-display);font-variant-numeric:tabular-nums;color:var(--muted)}
+.day.has{background:var(--surface-2);border-color:var(--line);cursor:pointer;transition:border-color .15s,background .15s}
+.day.has .dn{color:var(--ink)}
+.day.has:hover,.day.has:focus-visible{border-color:var(--orange);outline:none}
+.day.sel{background:var(--orange);border-color:var(--orange)}
+.day.sel .dn,.day.sel .mk{color:var(--on-orange)}
+.day.sel .mk .ic{stroke:var(--on-orange)}
+.day.sel .mk .ic .solid{fill:var(--on-orange)}
+.mks{display:flex;flex-direction:column;gap:2px;min-width:0}
+.mk{display:flex;align-items:center;gap:3px;font:700 11px/1 var(--f-display);letter-spacing:.3px;min-width:0;white-space:nowrap;overflow:hidden}
+.ic{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ic .solid{fill:currentColor;stroke:none}
+.mk.st-ready,.mk.st-draft{color:var(--orange)}
+.mk.st-placeholder{color:var(--muted)}
+.mk.st-ready .ic{fill:var(--orange-soft)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;padding:10px 4px 0;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend .sep{flex-basis:100%;height:0}
+.sw{width:10px;height:10px;border-radius:50%;display:inline-block}
+.sw.st-ready{background:var(--orange)}
+.sw.st-draft{border:2px solid var(--orange)}
+.sw.st-placeholder{border:2px solid var(--muted)}
+/* george checklist */
+.george{background:var(--surface);border:1px dashed var(--orange);border-radius:18px;padding:14px 14px 16px;margin-bottom:26px}
+.george summary{cursor:pointer;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;list-style:none}
+.george summary::-webkit-details-marker{display:none}
+.george summary span{font:italic 900 24px/1 var(--f-display);text-transform:uppercase;color:var(--orange)}
+.george summary small{color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0}
+.stats div{background:var(--bg);border-radius:10px;padding:8px;text-align:center}
+.stats b{display:block;font:900 26px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.stats span{font-size:12px;color:var(--muted)}
+.tscroll{overflow-x:auto;margin:0 -4px;padding:0 4px}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:13px}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 12px/1.2 var(--f-display);text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+td a{font:800 15px/1 var(--f-display);color:var(--orange);text-decoration:none}
+td.num{font-variant-numeric:tabular-nums}
+td.todo-c{color:var(--muted);min-width:200px}
+.ok{color:var(--ok);font-weight:700}.no{color:var(--muted)}
+.cgroups{display:grid;gap:14px;margin-top:16px}
+.cgroup h4{margin:0 0 6px;font:800 17px/1.2 var(--f-display);text-transform:uppercase;letter-spacing:.5px}
+.cnt{color:var(--muted);font-weight:700;margin-left:4px}
+.clist{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:14px}
+.clist li{display:flex;gap:9px;align-items:flex-start}
+.box{flex:none;width:18px;height:18px;border-radius:5px;border:2px solid var(--muted);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;margin-top:2px}
+.clist li.done{color:var(--muted)}
+.clist li.done .box{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+/* owner questions */
+.asks{background:var(--surface);border:1px solid var(--orange);border-radius:18px;padding:16px 14px;margin-bottom:26px;display:grid;gap:12px}
+.asks h2{margin:0;font:italic 900 26px/1 var(--f-display);text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.asks h2 span{background:var(--orange);color:var(--on-orange);font-style:normal;font-size:17px;padding:4px 9px;border-radius:999px}
+.qbox{background:var(--bg);border:1px solid var(--orange);border-radius:12px;padding:10px 12px}
+.qbox h4,.qpost h4{margin:0 0 8px;font:700 12px/1.2 var(--f-display);text-transform:uppercase;letter-spacing:1px;color:var(--orange)}
+.qbox ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14px}
+.qbox li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:start}
+.qbox li b{font:800 11px/1 var(--f-display);text-transform:uppercase;letter-spacing:.6px;padding:4px 6px;border-radius:5px;margin-top:2px;background:var(--orange);color:var(--on-orange)}
+.qbox li.q-attention b{background:transparent;color:var(--orange);border:1.5px solid var(--orange)}
+.qpost ol{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:14px}
+.qpost>ol>li{display:grid;grid-template-columns:64px minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:8px;align-items:start}
+.qpost>ol>li>a{font:italic 900 18px/1 var(--f-display);color:var(--orange);text-decoration:none}
+.qpost>ol>li>span{grid-column:1;grid-row:2;color:var(--muted);font-size:12px;margin-top:4px}
+.qpost>ol>li>ul{grid-column:2;grid-row:1/span 2;margin:0;padding-left:16px;display:grid;gap:4px}
+/* week + day sections */
+.week{font:italic 900 15px/1 var(--f-display);color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin:34px 0 4px;display:flex;align-items:center;gap:10px}
+.week::after{content:"";flex:1;height:1px;background:var(--line)}
+.dayblock{scroll-margin-top:16px;border-radius:20px;transition:box-shadow .4s}
+.dayblock.flash{box-shadow:0 0 0 2px var(--orange)}
+.dayhead{font:italic 900 26px/1.1 var(--f-display);margin:18px 0 10px;text-transform:uppercase}
+.dayhead span{color:var(--orange)}
+/* post card */
+.post{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-bottom:16px}
+.ph-head{display:flex;gap:12px;align-items:flex-start;padding:14px 14px 12px;flex-wrap:wrap}
+.pid{background:var(--orange);color:var(--on-orange);font:italic 900 30px/1 var(--f-display);padding:10px 12px 8px;border-radius:12px;min-width:76px;text-align:center;letter-spacing:-.5px;flex:none}
+.st-placeholder .pid{background:var(--surface-2);color:var(--ink);border:2px solid var(--line)}
+.hmeta{flex:1 1 200px;min-width:0}
+.pdate{font-weight:600;font-size:14px;color:var(--muted)}
+.ptitle{font:800 22px/1.15 var(--f-display);margin:2px 0 8px;text-wrap:balance}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:999px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+.chip.fmt{color:var(--ink)}
+.chip .ic{width:13px;height:13px}
+.status{font:700 12px/1 var(--f-body);padding:6px 10px;border-radius:999px;white-space:nowrap}
+.status.st-ready{background:var(--orange);color:var(--on-orange)}
+.status.st-draft{border:1.5px solid var(--orange);color:var(--orange)}
+.status.st-placeholder{border:1.5px dashed var(--muted);color:var(--muted)}
+.media{position:relative;background:#000}
+.media.tall{background:var(--bg);padding:0 14px}
+.media.tall .slide,.media.tall .ph{max-width:340px;margin:0 auto}
+.media.tall.car .slide{max-width:none}
+.slide{width:100%;max-width:100%;overflow:hidden;background:#000}
+.slide img,.slide video{width:100%;height:100%;object-fit:cover;display:block}
+.car .track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.car .track::-webkit-scrollbar{display:none}
+.car .slide{flex:0 0 100%;scroll-snap-align:center}
+.media.tall.car .track{max-width:340px;margin:0 auto;border-radius:12px}
+.nav{position:absolute;top:50%;transform:translateY(-70%);width:38px;height:38px;border-radius:50%;border:0;background:rgba(11,11,11,.72);color:#fff;font:700 24px/1 var(--f-body);cursor:pointer;display:none}
+.nav:focus-visible{outline:2px solid var(--orange)}
+.prev{left:10px}.next{right:10px}
+@media (hover:hover){.nav{display:block}}
+.dots{display:flex;justify-content:center;gap:6px;padding:10px 0 2px;background:var(--surface)}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--orange)}
+.hint{text-align:center;color:var(--muted);font-size:12px;padding:2px 0 4px;background:var(--surface)}
+.ph{width:100%;max-width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:24px;
+  background:repeating-linear-gradient(-45deg,var(--surface-2) 0 14px,var(--bg) 14px 28px)}
+.media:not(.tall) .ph{max-height:420px}
+.ph-crown{width:96px;mix-blend-mode:lighten;opacity:.9}
+.ph-t{font:italic 900 30px/1 var(--f-display);text-transform:uppercase;color:var(--ink);background:var(--bg);padding:6px 12px;border-radius:8px}
+.ph-n{font-size:14px;color:var(--muted);max-width:30ch;background:var(--bg);padding:6px 10px;border-radius:8px}
+.body{padding:14px 14px 16px;display:grid;gap:12px}
+.summary{margin:0}
+.cnote{margin:0;font-size:14px;color:var(--orange)}
+.block h4{margin:0 0 4px;font:700 12px/1.2 var(--f-display);text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.caption{white-space:pre-wrap;margin:0}
+.actions{margin:0}
+.change{font:800 14px/1 var(--f-display);text-transform:uppercase;letter-spacing:.5px;background:transparent;color:var(--orange);border:1.5px solid var(--orange);border-radius:999px;padding:11px 16px;cursor:pointer;min-height:44px}
+.change:hover{background:var(--orange);color:var(--on-orange)}
+.change:focus-visible,.sheet-box button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.sheet{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center;padding:16px}
+.sheet[hidden]{display:none}
+.sheet-box{width:100%;max-width:520px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 16px calc(16px + env(safe-area-inset-bottom,0px));display:grid;gap:12px}
+.sheet-box h2{margin:0;font:italic 900 26px/1 var(--f-display);text-transform:uppercase}
+.sheet-post{margin:0;color:var(--orange);font-weight:700}
+.sheet-box label{display:grid;gap:6px;font-size:14px;color:var(--muted)}
+.sheet-box textarea,.sheet-box input{font:inherit;font-size:16px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%;box-sizing:border-box}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.sheet-actions{display:flex;gap:10px;justify-content:flex-end}
+.sheet-actions button{font:800 15px/1 var(--f-display);text-transform:uppercase;border-radius:999px;padding:12px 18px;cursor:pointer;min-height:44px;border:0}
+#send{background:var(--orange);color:var(--on-orange)}
+#send:disabled{opacity:.6}
+.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)!important}
+.status{margin:0;min-height:1.2em;font-size:14px}
+.tags{margin:8px 0 0;font-size:13px;color:var(--muted);word-break:break-word}
+.tags b,.shook b{display:block;font:700 11px/1.3 var(--f-display);text-transform:uppercase;letter-spacing:1px;color:var(--orange)}
+.script{border-left:3px solid var(--orange);padding-left:12px}
+.shook{margin:0 0 8px;font-weight:700}
+.slines{white-space:pre-wrap;margin:0;font-size:15px;line-height:1.5}
+.muted{color:var(--muted);margin:0}
+.stexts{margin:0;padding-left:22px;display:grid;gap:4px;font-size:14px}
+.stexts li::marker{color:var(--orange);font-weight:700}
+.gbox{border:1px dashed var(--orange);border-radius:12px;padding:10px 12px;font-size:14px;background:var(--bg)}
+.gbox h4{color:var(--orange)}
+.gbox p{margin:4px 0 0}
+.todo{margin:0;padding-left:18px}
+.src{color:var(--muted)}
+code{font-size:12px;word-break:break-all}
+.totop{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  background:var(--orange);color:var(--on-orange);text-decoration:none;font:800 14px/1 var(--f-display);text-transform:uppercase;letter-spacing:.5px;
+  padding:12px 14px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+footer{color:var(--muted);font-size:13px;text-align:center;margin-top:32px}
+@media (max-width:420px){.mk b{display:none}.mks{flex-direction:row;flex-wrap:wrap}.day{min-height:56px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-carousel" viewBox="0 0 24 24"><rect x="7" y="3" width="13" height="16" rx="2"/><path d="M4 7v12a2 2 0 0 0 2 2h10"/></symbol>
+<symbol id="i-reel" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M10 8.5v7l6-3.5z" class="solid"/></symbol>
+<symbol id="i-story" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" class="solid"/></symbol>
+<symbol id="i-post" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 16l5-5 4 4 3-3 4 4"/></symbol>
+</svg>
+<div class="wrap" lang="el">
+  <div class="top"><img src="media/brand-logo.jpg" alt="Story Streat"><h1>Δεκέμβριος<br><span>2026</span></h1></div>
+  <div class="tag">Every night has a story</div>
+  <p class="intro">Όλα τα posts του μήνα σε ένα σημείο. Πατήστε μια μέρα στο ημερολόγιο για να δείτε τι ανεβαίνει. Για αλλαγή, πατήστε <b>«Ζήτα αλλαγή»</b> κάτω από το post και γράψτε τι θέλετε να αλλάξει. Τα posts με την ένδειξη «Σε παραγωγή» θα εμφανιστούν εδώ μόλις ετοιμαστούν.</p>
+  <section class="cal" aria-label="Ημερολόγιο Δεκεμβρίου"><div class="cal-head"><h2>Δεκέμβριος 2026</h2><p>Πατήστε μια μέρα για να δείτε τι ανεβαίνει.</p></div><div class="grid"><div class="dow">Δε</div><div class="dow">Τρ</div><div class="dow">Τε</div><div class="dow">Πε</div><div class="dow">Πα</div><div class="dow">Σα</div><div class="dow">Κυ</div><div class="day blank"></div><a class="day has" href="#d-1" data-day="1" aria-label="1/12: #P01 Carousel"><span class="dn">1</span><span class="mks"><span class="mk st-draft"><svg class="ic " aria-hidden="true"><use href="#i-carousel"/></svg><b>P01</b></span></span></a><div class="day"><span class="dn">2</span></div><a class="day has" href="#d-3" data-day="3" aria-label="3/12: #P02 Reel"><span class="dn">3</span><span class="mks"><span class="mk st-placeholder"><svg class="ic " aria-hidden="true"><use href="#i-reel"/></svg><b>P02</b></span></span></a><div class="day"><span class="dn">4</span></div><a class="day has we" href="#d-5" data-day="5" aria-label="5/12: #S01-A Story"><span class="dn">5</span><span class="mks"><span class="mk st-ready"><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg><b>S01-A</b></span></span></a><a class="day has we" href="#d-6" data-day="6" aria-label="6/12: #S01-B Story"><span class="dn">6</span><span class="mks"><span class="mk st-ready"><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg><b>S01-B</b></span></span></a><a class="day has" href="#d-7" data-day="7" aria-label="7/12: #P03 Carousel"><span class="dn">7</span><span class="mks"><span class="mk st-draft"><svg class="ic " aria-hidden="true"><use href="#i-carousel"/></svg><b>P03</b></span></span></a><a class="day has" href="#d-8" data-day="8" aria-label="8/12: #P04 Reel"><span class="dn">8</span><span class="mks"><span class="mk st-placeholder"><svg class="ic " aria-hidden="true"><use href="#i-reel"/></svg><b>P04</b></span></span></a><div class="day"><span class="dn">9</span></div><div class="day"><span class="dn">10</span></div><a class="day has" href="#d-11" data-day="11" aria-label="11/12: #S02 Story"><span class="dn">11</span><span class="mks"><span class="mk st-ready"><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg><b>S02</b></span></span></a><div class="day we"><span class="dn">12</span></div><div class="day we"><span class="dn">13</span></div><a class="day has" href="#d-14" data-day="14" aria-label="14/12: #P05 Reel"><span class="dn">14</span><span class="mks"><span class="mk st-placeholder"><svg class="ic " aria-hidden="true"><use href="#i-reel"/></svg><b>P05</b></span></span></a><a class="day has" href="#d-15" data-day="15" aria-label="15/12: #P06 Carousel"><span class="dn">15</span><span class="mks"><span class="mk st-draft"><svg class="ic " aria-hidden="true"><use href="#i-carousel"/></svg><b>P06</b></span></span></a><div class="day"><span class="dn">16</span></div><a class="day has" href="#d-17" data-day="17" aria-label="17/12: #S03 Story"><span class="dn">17</span><span class="mks"><span class="mk st-ready"><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg><b>S03</b></span></span></a><div class="day"><span class="dn">18</span></div><div class="day we"><span class="dn">19</span></div><div class="day we"><span class="dn">20</span></div><div class="day"><span class="dn">21</span></div><div class="day"><span class="dn">22</span></div><a class="day has" href="#d-23" data-day="23" aria-label="23/12: #P07 Reel"><span class="dn">23</span><span class="mks"><span class="mk st-placeholder"><svg class="ic " aria-hidden="true"><use href="#i-reel"/></svg><b>P07</b></span></span></a><a class="day has" href="#d-24" data-day="24" aria-label="24/12: #S04 Story"><span class="dn">24</span><span class="mks"><span class="mk st-draft"><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg><b>S04</b></span></span></a><div class="day"><span class="dn">25</span></div><a class="day has we" href="#d-26" data-day="26" aria-label="26/12: #P08 Carousel"><span class="dn">26</span><span class="mks"><span class="mk st-draft"><svg class="ic " aria-hidden="true"><use href="#i-carousel"/></svg><b>P08</b></span></span></a><div class="day we"><span class="dn">27</span></div><div class="day"><span class="dn">28</span></div><div class="day"><span class="dn">29</span></div><div class="day"><span class="dn">30</span></div><a class="day has" href="#d-31" data-day="31" aria-label="31/12: #G01 Post, #G01-S Story"><span class="dn">31</span><span class="mks"><span class="mk st-draft"><svg class="ic " aria-hidden="true"><use href="#i-post"/></svg><b>G01</b></span><span class="mk st-draft"><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg><b>G01-S</b></span></span></a></div><div class="legend"><span><svg class="ic " aria-hidden="true"><use href="#i-carousel"/></svg>Carousel</span><span><svg class="ic " aria-hidden="true"><use href="#i-reel"/></svg>Reel</span><span><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg>Story</span><span><svg class="ic " aria-hidden="true"><use href="#i-post"/></svg>Post</span><span class="sep"></span><span><i class="sw st-ready"></i>Έτοιμο</span><span><i class="sw st-draft"></i>Προσχέδιο</span><span><i class="sw st-placeholder"></i>Σε παραγωγή</span></div></section>
+  
+  <h2 class="week">Εβδομάδα 1 · 1–6 Δεκεμβρίου</h2><section class="dayblock" id="d-1"><h3 class="dayhead">Τρίτη <span>1/12</span></h3>
+<article class="post st-draft" id="p-P01">
+  <header class="ph-head">
+    <div class="pid">#P01</div>
+    <div class="hmeta">
+      <div class="pdate">Τρίτη 1 Δεκεμβρίου · ώρα: θα οριστεί</div>
+      <h3 class="ptitle">Every night has a story</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-carousel"/></svg>Carousel · 4 εικόνες</span><span class="chip">Instagram</span><span class="chip">Facebook</span><span class="chip">TikTok</span></div>
+    </div>
+    <span class="status st-draft">Προσχέδιο</span>
+  </header>
+  <div class="media car"><div class="track" tabindex="0" aria-label="4 εικόνες, σύρετε"><div class="slide" style="aspect-ratio:4/5"><img src="media/P01-1.jpg" alt="#P01"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P01-2.jpg" alt="#P01"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P01-3.jpg" alt="#P01"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P01-4.jpg" alt="#P01"></div></div><button class="nav prev" type="button" aria-label="Προηγούμενο">‹</button><button class="nav next" type="button" aria-label="Επόμενο">›</button><div class="dots"><i></i><i></i><i></i><i></i></div><div class="hint">Σύρετε για τα 4 εικόνες →</div></div>
+  <div class="body">
+    <p class="cnote">Τα 4 slides είναι έτοιμα με τα κείμενα.</p>
+    
+    
+    <div class="block"><h4>Λεζάντα</h4><p class="caption">Η πόλη δεν κοιμάται ποτέ ολόκληρη.
+Κάποιος σχολάει, κάποιος πιάνει βάρδια, κάποιος γυρνάει από έξοδο.
+
+Εμείς είμαστε η στάση στη μέση.
+Δεν πάμε για sandwich, πάμε για story. 🧡
+
+Εσύ τι ώρα της νύχτας περνάς συνήθως; 🌙👇
+
+📍 Πειραιάς · Αιγάλεω</p><p class="tags"><b>Instagram · Facebook</b> #storystreat #yourstory #ηδικησουιστορια #πειραιας #αιγαλεω #streetfood #nightfood</p><p class="tags"><b>TikTok</b> #fyp #foodtok #streetfood #latenightfood #πειραιας #αιγαλεω #storystreat</p></div>
+    
+    <p class="actions"><button type="button" class="change" data-post="P01" data-when="Τρίτη 1 Δεκεμβρίου · ώρα: θα οριστεί">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><section class="dayblock" id="d-3"><h3 class="dayhead">Πέμπτη <span>3/12</span></h3>
+<article class="post st-placeholder" id="p-P02">
+  <header class="ph-head">
+    <div class="pid">#P02</div>
+    <div class="hmeta">
+      <div class="pdate">Πέμπτη 3 Δεκεμβρίου · ώρα: θα οριστεί</div>
+      <h3 class="ptitle">Τα 3 που πρέπει να δοκιμάσεις</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-reel"/></svg>Reel · βίντεο</span><span class="chip">Instagram</span><span class="chip">TikTok</span><span class="chip">Facebook</span></div>
+    </div>
+    <span class="status st-placeholder">Σε παραγωγή</span>
+  </header>
+  <div class="media tall"><div class="ph" style="aspect-ratio:9/16"><img src="media/brand-crown.jpg" alt="" class="ph-crown"><div class="ph-t">Σε παραγωγή</div><div class=ph-n>Το σενάριο είναι έτοιμο. Το βίντεο γυρίζεται στο μαγαζί.</div></div></div>
+  <div class="body">
+    
+    
+    <div class="block script"><h4>Σενάριο · τι λέει ο Λάμπρος</h4><p class="shook"><b>Κείμενο στην αρχή</b> Ποιος από τους 3 είσαι εσύ;</p><p class="slines">Πες μου τι τρως, να σου πω ποιος είσαι!
+
+Σάντουιτς φιλέτο προβατίνας. Με φέτα, ντομάτα, κρεμμύδι, sauce γιαουρτιού και sauce πιπεριάς.
+Για αυτόν που λέει «εγώ τρώω μόνο παραδοσιακά ελληνικά». Ορίστε!
+
+Burger Νούμερο 1. Μπιφτέκι angus, χειροποίητο παρακαλώ. Διπλό cheddar, ντομάτα, iceberg, aioli και sweet onion!
+Για αυτόν που δεν θέλει εκπλήξεις. Ξέρει τι θέλει και το παίρνει!
+
+Cheese rings. Έξι, με sweet chilly για βουτιές!
+Για όποιον λέει «δεν πεινάω πολύ» και μετά τρώει και τα έξι.
+
+Ποιος από τους 3 είσαι; Γράψ&#x27; το στα σχόλια!</p></div>
+    <div class="block"><h4>Λεζάντα</h4><p class="caption">Ο Λάμπρος δεν σε ξέρει.
+Του φτάνει να δει τι παραγγέλνεις. 😏
+
+Ποιον φίλο σου αναγνώρισες σε αυτό το βίντεο; Κάνε τον tag 👇
+
+📍 Πειραιάς · Αιγάλεω</p><p class="tags"><b>Instagram · Facebook</b> #storystreat #yourstory #ηδικησουιστορια #πειραιας #αιγαλεω #streetfood #burger</p><p class="tags"><b>TikTok</b> #fyp #foodtok #streetfood #burger #greekfood #πειραιας #αιγαλεω #storystreat</p></div>
+    <div class="qbox"><h4>Προσοχή · ερώτηση</h4><ul><li class="q-question"><b>Ερώτηση</b><span>Ποια μέρα στο τέλος Νοεμβρίου κάνουμε το γύρισμα; Ιδανικά εκτός αιχμής.</span></li></ul></div>
+    <p class="actions"><button type="button" class="change" data-post="P02" data-when="Πέμπτη 3 Δεκεμβρίου · ώρα: θα οριστεί">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><section class="dayblock" id="d-5"><h3 class="dayhead">Σάββατο <span>5/12</span></h3>
+<article class="post st-ready" id="p-S01-A">
+  <header class="ph-head">
+    <div class="pid">#S01-A</div>
+    <div class="hmeta">
+      <div class="pdate">Σάββατο 5 Δεκεμβρίου · ώρα: θα οριστεί</div>
+      <h3 class="ptitle">Ντέρμπι απόψε</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg>Story</span><span class="chip">Instagram</span><span class="chip">Facebook</span></div>
+    </div>
+    <span class="status st-ready">Έτοιμο για έγκριση</span>
+  </header>
+  <div class="media tall"><div class="slide" style="aspect-ratio:9/16"><img src="media/S01-A-1.jpg" alt="#S01-A"></div></div>
+  <div class="body">
+    <p class="cnote">Ανεβαίνει περίπου 3 ώρες πριν τη σέντρα.</p>
+    
+    
+    
+    
+    <p class="actions"><button type="button" class="change" data-post="S01-A" data-when="Σάββατο 5 Δεκεμβρίου · ώρα: θα οριστεί">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><section class="dayblock" id="d-6"><h3 class="dayhead">Κυριακή <span>6/12</span></h3>
+<article class="post st-ready" id="p-S01-B">
+  <header class="ph-head">
+    <div class="pid">#S01-B</div>
+    <div class="hmeta">
+      <div class="pdate">Κυριακή 6 Δεκεμβρίου · 10:00</div>
+      <h3 class="ptitle">Χρόνια πολλά στους Νίκους</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg>Story</span><span class="chip">Instagram</span><span class="chip">Facebook</span></div>
+    </div>
+    <span class="status st-ready">Έτοιμο για έγκριση</span>
+  </header>
+  <div class="media tall"><div class="slide" style="aspect-ratio:9/16"><img src="media/S01-B-1.jpg" alt="#S01-B"></div></div>
+  <div class="body">
+    
+    
+    
+    
+    
+    <p class="actions"><button type="button" class="change" data-post="S01-B" data-when="Κυριακή 6 Δεκεμβρίου · 10:00">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><h2 class="week">Εβδομάδα 2 · 7–13 Δεκεμβρίου</h2><section class="dayblock" id="d-7"><h3 class="dayhead">Δευτέρα <span>7/12</span></h3>
+<article class="post st-draft" id="p-P03">
+  <header class="ph-head">
+    <div class="pid">#P03</div>
+    <div class="hmeta">
+      <div class="pdate">Δευτέρα 7 Δεκεμβρίου · ώρα: θα οριστεί</div>
+      <h3 class="ptitle">Το επόμενο κεφάλαιο γράφεται στο Παγκράτι</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-carousel"/></svg>Carousel · 5 εικόνες</span><span class="chip">Instagram</span><span class="chip">Facebook</span><span class="chip">TikTok</span></div>
+    </div>
+    <span class="status st-draft">Προσχέδιο</span>
+  </header>
+  <div class="media car"><div class="track" tabindex="0" aria-label="5 εικόνες, σύρετε"><div class="slide" style="aspect-ratio:4/5"><img src="media/P03-1.jpg" alt="#P03"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P03-2.jpg" alt="#P03"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P03-3.jpg" alt="#P03"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P03-4.jpg" alt="#P03"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P03-5.jpg" alt="#P03"></div></div><button class="nav prev" type="button" aria-label="Προηγούμενο">‹</button><button class="nav next" type="button" aria-label="Επόμενο">›</button><div class="dots"><i></i><i></i><i></i><i></i><i></i></div><div class="hint">Σύρετε για τα 5 εικόνες →</div></div>
+  <div class="body">
+    <p class="cnote">Τα 5 slides είναι έτοιμα, με φωτογραφίες βασισμένες στα σχέδια του νέου μαγαζιού.</p>
+    
+    
+    <div class="block"><h4>Λεζάντα</h4><p class="caption">Πειραιάς, Αιγάλεω, και τώρα κέντρο.
+Ίδια νύχτα, ίδιες μερίδες, νέα γειτονιά. 🧡
+
+Ποιος από την παρέα σου μένει Παγκράτι; 👇
+
+📍 Παγκράτι · [ΔΙΕΥΘΥΝΣΗ] [ΠΡΟΣ ΕΠΙΒΕΒΑΙΩΣΗ]
+🗓 Opening [ΗΜΕΡΟΜΗΝΙΑ, ενδεικτικά Σάββατο 12/12] [ΠΡΟΣ ΕΠΙΒΕΒΑΙΩΣΗ]
+📍 Πειραιάς · Ακτή Μιαούλη 301
+📍 Αιγάλεω · Θηβών 395</p><p class="tags"><b>Instagram · Facebook</b> #storystreat #yourstory #ηδικησουιστορια #παγκρατι #αθηνα #streetfood #πειραιας #αιγαλεω</p><p class="tags"><b>TikTok</b> #fyp #athens #παγκρατι #newopening #foodtok #streetfood #storystreat</p></div>
+    <div class="qbox"><h4>Προσοχή · ερώτηση</h4><ul><li class="q-question"><b>Ερώτηση</b><span>Ποια είναι η διεύθυνση του μαγαζιού στο Παγκράτι;</span></li><li class="q-question"><b>Ερώτηση</b><span>Ποια μέρα γίνεται το opening;</span></li></ul></div>
+    <p class="actions"><button type="button" class="change" data-post="P03" data-when="Δευτέρα 7 Δεκεμβρίου · ώρα: θα οριστεί">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><section class="dayblock" id="d-8"><h3 class="dayhead">Τρίτη <span>8/12</span></h3>
+<article class="post st-placeholder" id="p-P04">
+  <header class="ph-head">
+    <div class="pid">#P04</div>
+    <div class="hmeta">
+      <div class="pdate">Τρίτη 8 Δεκεμβρίου · ώρα: θα οριστεί</div>
+      <h3 class="ptitle">Τι τρως σε κάθε ματς</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-reel"/></svg>Reel · βίντεο</span><span class="chip">Instagram</span><span class="chip">TikTok</span><span class="chip">Facebook</span></div>
+    </div>
+    <span class="status st-placeholder">Σε παραγωγή</span>
+  </header>
+  <div class="media tall"><div class="ph" style="aspect-ratio:9/16"><img src="media/brand-crown.jpg" alt="" class="ph-crown"><div class="ph-t">Σε παραγωγή</div><div class=ph-n>Το σενάριο είναι έτοιμο. Το βίντεο γυρίζεται στο μαγαζί.</div></div></div>
+  <div class="body">
+    
+    
+    <div class="block script"><h4>Σενάριο · τι λέει ο Λάμπρος</h4><p class="shook"><b>Κείμενο στην αρχή</b> Νηστικός δεν βλέπεις μπάλα!</p><p class="slines">Δεν με νοιάζει ποιον υποστηρίζεις. Με νοιάζει τι τρως!
+
+Champions League θέλει Burger με χειροποίητο μοσχαρίσιο μπιφτέκι. Διπλό cheddar, μπέικον, καραμελωμένα κρεμμύδια, πίκλες, τηγανητό αυγό και Jack Daniel&#x27;s sauce.
+Για αυτόν που βλέπει το ματς μόνος του και δεν μοιράζεται τίποτα!
+
+Europa League δεν γίνεται χωρίς το beast pork σάντουιτς. Δύο πανσέτες, δύο μπριζολάκια, τέσσερις φέτες τυρί, τέσσερις μπέικον, ντομάτα, κρεμμύδι, iceberg και πατάτες δίπλα.
+Ενα σάντουιτς για όλη την παρέα!
+
+Ντέρμπι στο μπάσκετ θέλει κάτι πιο ιδιαίτερο!
+XXL Mix Bucket από το Story Chicken. Δεκατρείς φτερούγες, πέντε φιλέτα.
+Για την παρέα που δεν θέλει να σηκωθεί μέχρι τη λήξη.
+
+Ποιος κερδίζει δεν ξέρω! Εσύ πάντως θα φας καλά!</p></div>
+    <div class="block"><h4>Λεζάντα</h4><p class="caption">Τρεις διοργανώσεις, τρεις παραγγελίες, μία παρέα που δεν σηκώνεται από τον καναπέ. 🛋️
+Για το μπάσκετ ο Λάμπρος φώναξε ενισχύσεις: @storychicken_streetfood 🍗
+
+Εσύ σε ποιο ματς τρως τα περισσότερα; ⚽🏀👇
+
+📍 Πειραιάς · Αιγάλεω
+🍗 XXL Mix Bucket: [ΠΟΥ ΠΑΡΑΓΓΕΛΝΕΤΑΙ] [TBD]</p><p class="tags"><b>Instagram · Facebook</b> #storystreat #storychicken #yourstory #ματς #ντερμπι #πειραιας #αιγαλεω #streetfood</p><p class="tags"><b>TikTok</b> #fyp #football #basketball #matchday #foodtok #storystreat #storychicken</p></div>
+    <div class="qbox"><h4>Προσοχή · ερώτηση</h4><ul><li class="q-question"><b>Ερώτηση</b><span>Από πού παραγγέλνει κανείς Story Chicken; Μπορούμε να πούμε ότι είναι οι ίδιοι ιδιοκτήτες;</span></li><li class="q-question"><b>Ερώτηση</b><span>Ποιος αποδέχεται το συνεργατικό post στον λογαριασμό @storychicken_streetfood;</span></li></ul></div>
+    <p class="actions"><button type="button" class="change" data-post="P04" data-when="Τρίτη 8 Δεκεμβρίου · ώρα: θα οριστεί">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><section class="dayblock" id="d-11"><h3 class="dayhead">Παρασκευή <span>11/12</span></h3>
+<article class="post st-ready" id="p-S02">
+  <header class="ph-head">
+    <div class="pid">#S02</div>
+    <div class="hmeta">
+      <div class="pdate">Παρασκευή 11 Δεκεμβρίου · ώρα: θα οριστεί</div>
+      <h3 class="ptitle">Παγκράτι, ερχόμαστε.</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg>Story</span><span class="chip">Instagram</span><span class="chip">Facebook</span></div>
+    </div>
+    <span class="status st-ready">Έτοιμο για έγκριση</span>
+  </header>
+  <div class="media tall"><div class="slide" style="aspect-ratio:9/16"><img src="media/S02-1.jpg" alt="#S02"></div></div>
+  <div class="body">
+    <p class="cnote">Η ημερομηνία «Σάββατο 12/12» είναι ενδεικτική.</p>
+    
+    
+    
+    <div class="qbox"><h4>Προσοχή · ερώτηση</h4><ul><li class="q-question"><b>Ερώτηση</b><span>Επιβεβαιώνετε το opening το Σάββατο 12/12; Το story ανεβαίνει μόνο αν κλειδώσει η ημερομηνία.</span></li><li class="q-question"><b>Ερώτηση</b><span>Μπορούμε να γράψουμε δημόσια το ποσό των 500 € σε δωροεπιταγές efood;</span></li></ul></div>
+    <p class="actions"><button type="button" class="change" data-post="S02" data-when="Παρασκευή 11 Δεκεμβρίου · ώρα: θα οριστεί">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><h2 class="week">Εβδομάδα 3 · 14–20 Δεκεμβρίου</h2><section class="dayblock" id="d-14"><h3 class="dayhead">Δευτέρα <span>14/12</span></h3>
+<article class="post st-placeholder" id="p-P05">
+  <header class="ph-head">
+    <div class="pid">#P05</div>
+    <div class="hmeta">
+      <div class="pdate">Δευτέρα 14 Δεκεμβρίου · ώρα: θα οριστεί</div>
+      <h3 class="ptitle">Ο Λάμπρος διαβάζει τις κριτικές μας</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-reel"/></svg>Reel · βίντεο</span><span class="chip">Instagram</span><span class="chip">TikTok</span><span class="chip">Facebook</span></div>
+    </div>
+    <span class="status st-placeholder">Σε παραγωγή</span>
+  </header>
+  <div class="media tall"><div class="ph" style="aspect-ratio:9/16"><img src="media/brand-crown.jpg" alt="" class="ph-crown"><div class="ph-t">Σε παραγωγή</div><div class=ph-n>Το σενάριο είναι έτοιμο. Το βίντεο γυρίζεται στο μαγαζί.</div></div></div>
+  <div class="body">
+    
+    
+    <div class="block script"><h4>Σενάριο · τι λέει ο Λάμπρος</h4><p class="shook"><b>Κείμενο στην αρχή</b> Διαβάζω τις κριτικές μας (τις κακές)</p><p class="slines">«Είναι το μαγαζί που θα φας αυτό που θέλει ο ψήστης. Όχι εσύ.»
+Ναι. Αλλά δεν μας είπες αν σου άρεσε.
+
+«Ενώ έχει τέλειο φαγητό, δυστυχώς είναι πιο αργό και από τον θάνατο.»
+Το καλό πράγμα αργεί να γίνει!
+
+«Τέτοιοι χρόνοι αναμονής δεν είναι για καντίνα, είναι για ταβέρνα.»
+Ταβέρνα με βαρέλια. Νέο concept.
+
+«Πήρα με μπιφτέκι πρόβατο και ένα δάκρυ κύλησε στην πρώτη μπουκιά.»
+Μη κλαις! Πάρε και δεύτερο.
+
+«Δεν μπορώ να καταλάβω όλους αυτούς που λένε τα καλύτερα, εκτός αν είναι όλοι συγγενείς του μαγαζάτορα.»
+Δυόμισι χιλιάδες συγγενείς; Μεγάλο σόι!
+
+«Περιμένεις τιμωρία για να φας ένα σάντουιτς.»
+Αν δεν μπορείς να περιμένεις, παράγγειλε από την Wolt ή efood.
+
+«Ευγενική εξυπηρέτηση από τον Λάμπρο. Προτείνει για όλα τα γούστα!»
+Αυτές είναι οι σωστές κριτικές! Τέτοια θέλω να μου γράφετε!</p></div>
+    <div class="block"><h4>Λεζάντα</h4><p class="caption">Μας γράφετε στο Google. Ο Λάμπρος τα διαβάζει. Όλα. 📱
+Κανείς δεν του είπε να απαντήσει. Απάντησε.
+
+Ποια απάντησή του ήταν η καλύτερη; 👇
+
+📍 Πειραιάς · Αιγάλεω</p><p class="tags"><b>Instagram · Facebook</b> #storystreat #yourstory #ηδικησουιστορια #κριτικες #πειραιας #αιγαλεω #streetfood</p><p class="tags"><b>TikTok</b> #fyp #reviews #googlereviews #readingreviews #foodtok #storystreat</p></div>
+    <div class="qbox"><h4>Προσοχή · ερώτηση</h4><ul><li class="q-attention"><b>Προσοχή</b><span>Εγκρίνετε τις 7 κριτικές που θα διαβάσει ο Λάμπρος (στο σενάριο πιο κάτω); Χρειαζόμαστε την έγκριση τουλάχιστον 3 μέρες πριν το γύρισμα.</span></li></ul></div>
+    <p class="actions"><button type="button" class="change" data-post="P05" data-when="Δευτέρα 14 Δεκεμβρίου · ώρα: θα οριστεί">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><section class="dayblock" id="d-15"><h3 class="dayhead">Τρίτη <span>15/12</span></h3>
+<article class="post st-draft" id="p-P06">
+  <header class="ph-head">
+    <div class="pid">#P06</div>
+    <div class="hmeta">
+      <div class="pdate">Τρίτη 15 Δεκεμβρίου · ώρα: θα οριστεί</div>
+      <h3 class="ptitle">Κάνε μας tag στην ιστορία σου</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-carousel"/></svg>Carousel · 5 εικόνες</span><span class="chip">Instagram</span><span class="chip">Facebook</span><span class="chip">TikTok</span></div>
+    </div>
+    <span class="status st-draft">Προσχέδιο</span>
+  </header>
+  <div class="media car"><div class="track" tabindex="0" aria-label="5 εικόνες, σύρετε"><div class="slide" style="aspect-ratio:4/5"><img src="media/P06-1.jpg" alt="#P06"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P06-2.jpg" alt="#P06"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P06-3.jpg" alt="#P06"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P06-4.jpg" alt="#P06"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P06-5.jpg" alt="#P06"></div></div><button class="nav prev" type="button" aria-label="Προηγούμενο">‹</button><button class="nav next" type="button" aria-label="Επόμενο">›</button><div class="dots"><i></i><i></i><i></i><i></i><i></i></div><div class="hint">Σύρετε για τα 5 εικόνες →</div></div>
+  <div class="body">
+    <p class="cnote">Τα 5 slides είναι έτοιμα.</p>
+    
+    
+    <div class="block"><h4>Λεζάντα</h4><p class="caption">Κάθε βράδυ εδώ γράφεται μια ιστορία. Θέλουμε να δούμε και τη δική σου. 📸
+Η παρέα, η ώρα, η πρώτη μπουκιά. Όσο πιο αληθινή, τόσο καλύτερα.
+
+Με ποιον θα έρθεις για τη δική σου; Κάνε τον tag 👇
+
+📋 Όροι
+• Διάρκεια: [ΑΠΟ 1/12 ή ΑΠΟ ΤΟ OPENING] [ΠΡΟΣ ΕΠΙΒΕΒΑΙΩΣΗ]. Κλήρωση στο τέλος κάθε μήνα, η πρώτη στις [31/12] [ΠΡΟΣ ΕΠΙΒΕΒΑΙΩΣΗ].
+• Μετράει κάθε story στο Instagram με tag @story_streat, από κατάστημα Story Streat. [Μόνο Instagram;] [ΠΡΟΣ ΕΠΙΒΕΒΑΙΩΣΗ]
+• Ο λογαριασμός σου πρέπει να είναι δημόσιος για να δούμε το tag. [18+;] [ΠΡΟΣ ΕΠΙΒΕΒΑΙΩΣΗ]
+• 10 νικητές τον μήνα, ο καθένας κερδίζει δωροεπιταγή 20 €, που εξαργυρώνεται σε [ΚΑΤΑΣΤΗΜΑΤΑ] έως [ΗΜΕΡΟΜΗΝΙΑ] [ΠΡΟΣ ΕΠΙΒΕΒΑΙΩΣΗ].
+• Οι νικητές ανακοινώνονται σε story και ενημερώνονται με μήνυμα στο Instagram. [ΠΡΟΣ ΕΠΙΒΕΒΑΙΩΣΗ]
+• Ο διαγωνισμός δεν σχετίζεται με το Instagram, το Facebook ή το TikTok.
+
+📍 Πειραιάς · Αιγάλεω · Παγκράτι</p><p class="tags"><b>Instagram · Facebook</b> #storystreat #yourstory #ηδικησουιστορια #διαγωνισμος #giveaway #πειραιας #αιγαλεω #παγκρατι</p><p class="tags"><b>TikTok</b> #fyp #giveaway #διαγωνισμος #foodtok #streetfood #storystreat</p></div>
+    <div class="qbox"><h4>Προσοχή · ερώτηση</h4><ul><li class="q-question"><b>Ερώτηση</b><span>Ποιοι είναι οι όροι του διαγωνισμού; Θα γραφτούν στην περιγραφή του post.</span></li><li class="q-question"><b>Ερώτηση</b><span>Θα είναι ανοιχτό το Παγκράτι ως τις 15/12; Αν όχι, βγαίνει από το τελευταίο slide.</span></li></ul></div>
+    <p class="actions"><button type="button" class="change" data-post="P06" data-when="Τρίτη 15 Δεκεμβρίου · ώρα: θα οριστεί">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><section class="dayblock" id="d-17"><h3 class="dayhead">Πέμπτη <span>17/12</span></h3>
+<article class="post st-ready" id="p-S03">
+  <header class="ph-head">
+    <div class="pid">#S03</div>
+    <div class="hmeta">
+      <div class="pdate">Πέμπτη 17 Δεκεμβρίου · 18:00</div>
+      <h3 class="ptitle">7 μέρες για τα Χριστούγεννα</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg>Story</span><span class="chip">Instagram</span><span class="chip">Facebook</span></div>
+    </div>
+    <span class="status st-ready">Έτοιμο για έγκριση</span>
+  </header>
+  <div class="media tall"><div class="slide" style="aspect-ratio:9/16"><img src="media/S03-1.jpg" alt="#S03"></div></div>
+  <div class="body">
+    
+    
+    
+    
+    
+    <p class="actions"><button type="button" class="change" data-post="S03" data-when="Πέμπτη 17 Δεκεμβρίου · 18:00">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><h2 class="week">Εβδομάδα 4 · 21–27 Δεκεμβρίου</h2><section class="dayblock" id="d-23"><h3 class="dayhead">Τετάρτη <span>23/12</span></h3>
+<article class="post st-placeholder" id="p-P07">
+  <header class="ph-head">
+    <div class="pid">#P07</div>
+    <div class="hmeta">
+      <div class="pdate">Τετάρτη 23 Δεκεμβρίου · ώρα: θα οριστεί</div>
+      <h3 class="ptitle">Ο Λάμπρος βαθμολογεί τα φαγητά των γιορτών</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-reel"/></svg>Reel · βίντεο</span><span class="chip">Instagram</span><span class="chip">TikTok</span><span class="chip">Facebook</span></div>
+    </div>
+    <span class="status st-placeholder">Σε παραγωγή</span>
+  </header>
+  <div class="media tall"><div class="ph" style="aspect-ratio:9/16"><img src="media/brand-crown.jpg" alt="" class="ph-crown"><div class="ph-t">Σε παραγωγή</div><div class=ph-n>Το σενάριο είναι έτοιμο. Το βίντεο γυρίζεται στο μαγαζί.</div></div></div>
+  <div class="body">
+    
+    
+    <div class="block script"><h4>Σενάριο · τι λέει ο Λάμπρος</h4><p class="shook"><b>Κείμενο στην αρχή</b> Βαθμολογώ τα φαγητά των Χριστουγέννων</p><p class="slines">Μελομακάρονα. Επτά στα δέκα. Τα κάνει η μάνα μου, δεν μπορώ να βάλω λιγότερο!
+
+Κουραμπιές. Τρία στα δέκα. Γιατί λερώνουν τη μπλούζα συνέχεια και δεν μπορώ!
+
+Δίπλες. Έξι στα δέκα. Τρως μία, μαζεύεις ψίχουλα μέχρι τα Φώτα.
+
+Κάστανα. Πέντε στα δέκα. Μισή ώρα να τα ξεφλουδίσεις, δύο δευτερόλεπτα να τα φας.
+
+Μανταρίνι. Δύο στα δέκα. Αυτό δεν είναι φαγητό. Είναι σνακ.
+
+Γαλοπούλα γεμιστή. Ένα στα δέκα. Και αυτό για τη γέμιση.
+
+Βασιλόπιτα. Πέντε στα δέκα. Αν πέσει το φλουρί σε μένα, δέκα.
+
+Σάντουιτς από Story Streat. Δέκα στα δέκα. Ασυζητητί!
+
+Εσύ τι βαθμό βάζεις στον κουραμπιέ; Γράψ&#x27; το στα σχόλια!</p></div>
+    <div class="block"><h4>Λεζάντα</h4><p class="caption">Το γιορτινό τραπέζι πέρασε από εξετάσεις. Δεν πέρασαν όλοι. 🎄
+Η άχνη ακόμα βγαίνει από τη μπλούζα του Λάμπρου.
+
+Ποιο γιορτινό φαγητό αδικήθηκε περισσότερο; 👇
+
+📍 Πειραιάς · Αιγάλεω · Παγκράτι</p><p class="tags"><b>Instagram · Facebook</b> #storystreat #yourstory #ηδικησουιστορια #χριστουγεννα #πειραιας #αιγαλεω #streetfood</p><p class="tags"><b>TikTok</b> #fyp #christmas #χριστουγεννα #μελομακαρονα #κουραμπιεδες #foodtok #storystreat</p></div>
+    <div class="qbox"><h4>Προσοχή · ερώτηση</h4><ul><li class="q-question"><b>Ερώτηση</b><span>Θα υπάρχει χριστουγεννιάτικος στολισμός στο μαγαζί τη μέρα του γυρίσματος;</span></li></ul></div>
+    <p class="actions"><button type="button" class="change" data-post="P07" data-when="Τετάρτη 23 Δεκεμβρίου · ώρα: θα οριστεί">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><section class="dayblock" id="d-24"><h3 class="dayhead">Πέμπτη <span>24/12</span></h3>
+<article class="post st-draft" id="p-S04">
+  <header class="ph-head">
+    <div class="pid">#S04</div>
+    <div class="hmeta">
+      <div class="pdate">Πέμπτη 24 Δεκεμβρίου · 09:00</div>
+      <h3 class="ptitle">Χρόνια πολλά + ωράριο γιορτών</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg>Story · 2 καρέ</span><span class="chip">Instagram</span><span class="chip">Facebook</span></div>
+    </div>
+    <span class="status st-draft">Προσχέδιο</span>
+  </header>
+  <div class="media tall car"><div class="track" tabindex="0" aria-label="2 καρέ, σύρετε"><div class="slide" style="aspect-ratio:9/16"><img src="media/S04-1.jpg" alt="#S04"></div><div class="slide" style="aspect-ratio:9/16"><img src="media/S04-2.jpg" alt="#S04"></div></div><button class="nav prev" type="button" aria-label="Προηγούμενο">‹</button><button class="nav next" type="button" aria-label="Επόμενο">›</button><div class="dots"><i></i><i></i></div><div class="hint">Σύρετε για τα 2 καρέ →</div></div>
+  <div class="body">
+    
+    
+    
+    
+    <div class="qbox"><h4>Προσοχή · ερώτηση</h4><ul><li class="q-question"><b>Ερώτηση</b><span>Ποιο είναι το ωράριο στις 24, 25 και 26/12, ανά κατάστημα αν διαφέρει; Τώρα γράφει 24/12 18:00–05:00 και 25–26/12 18:00–06:00.</span></li><li class="q-question"><b>Ερώτηση</b><span>Θα είναι ανοιχτό το Παγκράτι ως τις 24/12; Αν όχι, βγαίνει από τον πίνακα.</span></li></ul></div>
+    <p class="actions"><button type="button" class="change" data-post="S04" data-when="Πέμπτη 24 Δεκεμβρίου · 09:00">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><section class="dayblock" id="d-26"><h3 class="dayhead">Σάββατο <span>26/12</span></h3>
+<article class="post st-draft" id="p-P08">
+  <header class="ph-head">
+    <div class="pid">#P08</div>
+    <div class="hmeta">
+      <div class="pdate">Σάββατο 26 Δεκεμβρίου · ώρα: θα οριστεί</div>
+      <h3 class="ptitle">Το τραπέζι τελείωσε. Η ιστορία όχι.</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-carousel"/></svg>Carousel · 5 εικόνες</span><span class="chip">Instagram</span><span class="chip">Facebook</span><span class="chip">TikTok</span></div>
+    </div>
+    <span class="status st-draft">Προσχέδιο</span>
+  </header>
+  <div class="media car"><div class="track" tabindex="0" aria-label="5 εικόνες, σύρετε"><div class="slide" style="aspect-ratio:4/5"><img src="media/P08-1.jpg" alt="#P08"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P08-2.jpg" alt="#P08"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P08-3.jpg" alt="#P08"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P08-4.jpg" alt="#P08"></div><div class="slide" style="aspect-ratio:4/5"><img src="media/P08-5.jpg" alt="#P08"></div></div><button class="nav prev" type="button" aria-label="Προηγούμενο">‹</button><button class="nav next" type="button" aria-label="Επόμενο">›</button><div class="dots"><i></i><i></i><i></i><i></i><i></i></div><div class="hint">Σύρετε για τα 5 εικόνες →</div></div>
+  <div class="body">
+    <p class="cnote">Τα 5 slides είναι έτοιμα με τα κείμενα.</p>
+    
+    
+    <div class="block"><h4>Λεζάντα</h4><p class="caption">Στις 9 τελείωσε η γαλοπούλα.
+Στις 10 χτύπησε το κινητό.
+Στις 11 όλοι φορούσαν ήδη μπουφάν.
+
+Πάμε για After; 🌙
+
+Ποιον από τα ξαδέρφια παίρνεις πάντα μαζί; Κάνε τον tag 👇
+
+📍 Πειραιάς · Αιγάλεω · Παγκράτι</p><p class="tags"><b>Instagram · Facebook</b> #storystreat #yourstory #ηδικησουιστορια #χριστουγεννα #πειραιας #αιγαλεω #nightfood</p><p class="tags"><b>TikTok</b> #fyp #foodtok #christmas #latenightfood #πειραιας #streetfood #storystreat</p></div>
+    <div class="qbox"><h4>Προσοχή · ερώτηση</h4><ul><li class="q-question"><b>Ερώτηση</b><span>Στις 26/12 ισχύει το κανονικό ωράριο, ανοιχτά μέχρι τις 5 το πρωί; Το γράφει το τελευταίο slide.</span></li></ul></div>
+    <p class="actions"><button type="button" class="change" data-post="P08" data-when="Σάββατο 26 Δεκεμβρίου · ώρα: θα οριστεί">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section><h2 class="week">Εβδομάδα 5 · 28–31 Δεκεμβρίου</h2><section class="dayblock" id="d-31"><h3 class="dayhead">Πέμπτη <span>31/12</span></h3>
+<article class="post st-draft" id="p-G01">
+  <header class="ph-head">
+    <div class="pid">#G01</div>
+    <div class="hmeta">
+      <div class="pdate">Πέμπτη 31 Δεκεμβρίου · ώρα: θα οριστεί</div>
+      <h3 class="ptitle">Καλή χρονιά. Κεφάλαιο 2027</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-post"/></svg>Post</span><span class="chip">Instagram</span><span class="chip">Facebook</span><span class="chip">TikTok</span></div>
+    </div>
+    <span class="status st-draft">Προσχέδιο</span>
+  </header>
+  <div class="media"><div class="slide" style="aspect-ratio:4/5"><img src="media/G01-1.jpg" alt="#G01"></div></div>
+  <div class="body">
+    <p class="cnote">Δώρο από εμάς, εκτός πακέτου. Ανεβαίνει και ως story (G01-S).</p>
+    
+    
+    <div class="block"><h4>Λεζάντα</h4><p class="caption">Νταλικέρηδες, νοσηλεύτριες, παρέες μετά το ματς, ζευγάρια στις 4 τα ξημερώματα.
+Εσείς γράψατε το 2026. Εμείς απλώς κρατούσαμε τα φώτα αναμμένα. 🧡
+
+Καλή χρονιά από όλη την ομάδα του Story Streat ✨
+
+Ποια ήταν η καλύτερη νύχτα σου φέτος; 👇</p><p class="tags"><b>Instagram · Facebook</b> #storystreat #yourstory #ηδικησουιστορια #καληχρονια #2027 #πειραιας #αιγαλεω #παγκρατι</p><p class="tags"><b>TikTok</b> #fyp #newyear #καληχρονια #2027 #foodtok #storystreat</p></div>
+    <div class="qbox"><h4>Προσοχή · ερώτηση</h4><ul><li class="q-question"><b>Ερώτηση</b><span>Ποιο είναι το ωράριο στις 31/12 και 1/1, ανά κατάστημα αν διαφέρει; Τώρα γράφει 31/12 18:00–05:00 και 1/1 18:00–06:00.</span></li><li class="q-question"><b>Ερώτηση</b><span>Θα είναι ανοιχτό το Παγκράτι ως τις 31/12; Αν όχι, βγαίνει από τη γραμμή με τα καταστήματα.</span></li></ul></div>
+    <p class="actions"><button type="button" class="change" data-post="G01" data-when="Πέμπτη 31 Δεκεμβρίου · ώρα: θα οριστεί">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article>
+<article class="post st-draft" id="p-G01-S">
+  <header class="ph-head">
+    <div class="pid">#G01-S</div>
+    <div class="hmeta">
+      <div class="pdate">Πέμπτη 31 Δεκεμβρίου · ώρα: θα οριστεί</div>
+      <h3 class="ptitle">Καλή χρονιά (story)</h3>
+      <div class="chips"><span class="chip fmt"><svg class="ic " aria-hidden="true"><use href="#i-story"/></svg>Story</span><span class="chip">Instagram</span><span class="chip">Facebook</span></div>
+    </div>
+    <span class="status st-draft">Προσχέδιο</span>
+  </header>
+  <div class="media tall"><div class="slide" style="aspect-ratio:9/16"><img src="media/G01-S-1.jpg" alt="#G01-S"></div></div>
+  <div class="body">
+    
+    
+    
+    
+    
+    <p class="actions"><button type="button" class="change" data-post="G01-S" data-when="Πέμπτη 31 Δεκεμβρίου · ώρα: θα οριστεί">Ζήτα αλλαγή</button></p>
+    
+  </div>
+</article></section>
+  <footer>Story Streat · Δεκέμβριος 2026 · xenos.social · ενημέρωση 18/11/2026</footer>
+</div>
+<a class="totop" lang="el" hidden href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Ημερολόγιο</a>
+
+<div id="sheet" class="sheet" lang="el" hidden><form id="change-form" class="sheet-box">
+<h2>Ζήτα αλλαγή</h2>
+<p id="sheet-post" class="sheet-post"></p>
+<label>Τι θέλετε να αλλάξει;<textarea name="message" id="msg" rows="5" required></textarea></label>
+<label>Το όνομά σας (προαιρετικά)<input name="name" type="text" autocomplete="name"></label>
+<input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+<input type="hidden" name="post" id="post-field">
+<div class="sheet-actions"><button type="button" id="cancel" class="ghost">Άκυρο</button><button type="submit" id="send">Αποστολή</button></div>
+<p id="status" class="status" role="status"></p>
+</form></div>
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function select(day, scroll){
+    document.querySelectorAll('.day.sel').forEach(function(x){x.classList.remove('sel')});
+    var cell = document.querySelector('.day[data-day="'+day+'"]');
+    if(cell) cell.classList.add('sel');
+    var sec = document.getElementById('d-'+day);
+    if(!sec) return;
+    if(scroll){
+      sec.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
+      // re-align once images above have finished loading
+      setTimeout(function(){ if(Math.abs(sec.getBoundingClientRect().top) > 40) sec.scrollIntoView({block: 'start'}); }, 900);
+    }
+    sec.classList.add('flash');
+    setTimeout(function(){sec.classList.remove('flash')}, 1600);
+  }
+  document.querySelectorAll('.day.has').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var d = a.getAttribute('data-day');
+      try { history.replaceState(null, '', '#d-'+d); } catch(_) {}
+      select(d, true);
+    });
+  });
+  var top = document.querySelector('.totop'), cal = document.querySelector('.cal');
+  function t(){ top.hidden = cal.getBoundingClientRect().bottom > 0; }
+  window.addEventListener('scroll', t, {passive:true}); t();
+  var m = /^#d-(\d+)$/.exec(location.hash);
+  if(m) setTimeout(function(){select(m[1], true)}, 50);
+  document.querySelectorAll('.car').forEach(function(c){
+    var t = c.querySelector('.track'), d = c.querySelectorAll('.dots i');
+    function idx(){ return Math.round(t.scrollLeft / Math.max(1, t.clientWidth)); }
+    function u(){ var i = idx(); d.forEach(function(x,k){ x.classList.toggle('on', k===i); }); }
+    function go(step){ t.scrollTo({left: (idx()+step) * t.clientWidth, behavior: reduce ? 'auto' : 'smooth'}); }
+    t.addEventListener('scroll', u, {passive:true});
+    c.querySelector('.prev').addEventListener('click', function(){go(-1)});
+    c.querySelector('.next').addEventListener('click', function(){go(1)});
+    t.addEventListener('keydown', function(e){ if(e.key==='ArrowRight'){go(1)} if(e.key==='ArrowLeft'){go(-1)} });
+    u();
+  });
+})();
+</script>
+<script>
+(function(){
+  var ENDPOINT = "https://script.google.com/macros/s/AKfycbwsgRQBCwbbG4gml_GZRtg5wQlf1svUv-wofJB7cDFjvg5MF5cByOPre8kBHqExd1nWrQ/exec";
+  var sheet = document.getElementById('sheet'), form = document.getElementById('change-form');
+  var status = document.getElementById('status'), sendBtn = document.getElementById('send');
+  var postField = document.getElementById('post-field');
+  document.querySelectorAll('.change').forEach(function(b){
+    b.addEventListener('click', function(){
+      form.reset();
+      postField.value = 'Story Streat · #' + b.dataset.post + ' · ' + b.dataset.when;
+      document.getElementById('sheet-post').textContent = '#' + b.dataset.post + ' · ' + b.dataset.when;
+      status.textContent = '';
+      sheet.hidden = false;
+      document.getElementById('msg').focus();
+    });
+  });
+  document.getElementById('cancel').addEventListener('click', function(){ sheet.hidden = true; });
+  sheet.addEventListener('click', function(e){ if(e.target === sheet) sheet.hidden = true; });
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(!ENDPOINT){ status.textContent = 'Η αποστολή δεν έχει ρυθμιστεί ακόμα.'; return; }
+    sendBtn.disabled = true;
+    status.textContent = 'Αποστολή…';
+    fetch(ENDPOINT, {method: 'POST', mode: 'no-cors', body: new URLSearchParams(new FormData(form))})
+      .then(function(){
+        status.textContent = 'Ευχαριστούμε! Το μήνυμα στάλθηκε.';
+        form.reset();
+        setTimeout(function(){ sheet.hidden = true; status.textContent = ''; }, 2000);
+      })
+      .catch(function(){ status.textContent = 'Κάτι πήγε στραβά. Δοκιμάστε ξανά ή στείλτε μας μήνυμα.'; })
+      .finally(function(){ sendBtn.disabled = false; });
+  });
+})();
+</script>
+</body></html>
